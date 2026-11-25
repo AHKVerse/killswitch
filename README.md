@@ -1,42 +1,65 @@
-# Ubuntu VPN killswitch
+# VPN Kill Switch 🛡️
 
-Ubuntu configuration for implementing a killswitch when your VPN connection drops.
+A cross-platform (Ubuntu & Windows) VPN Kill Switch with a graphical user interface (GUI) designed to prevent public IP leaks.
 
-## Principle
+Whenever your public IP deviates from your authorized VPN server IP (e.g., if the VPN drops or disconnects unexpectedly), **VPN Kill Switch** instantly severs your network connection to stop any unencrypted data from escaping.
 
-When connecting to a VPN through the NetworkManager, it can happen your VPN drops connection. If you don't implement a killswitch, your IP will be public for any new query. A killswitch allows blocking any connection to Internet if your VPN connection drops.
+---
 
-Your computer uses a specific `tun0` interface when connecting to a VPN. 
+## 🌟 Key Features
 
-The principle behind the following scripts is simply to deny all connection except the one from `tun0` thanks to `ufw` (a firewall).
+- **Instant Cut-off:** Immediately disables networking when an IP mismatch is detected.
+- **Easy Verification:** One-click detection of your current public IP.
+- **GUI & Desktop Integration:** Comes with custom icons and desktop application launchers.
+- **One-Click Network Restore:** Easily restore your network connectivity with a single click after reconnecting your VPN.
+- **Cross-Platform:** Available for both **Ubuntu / Debian** (GTK3 / NetworkManager) and **Windows** (Tkinter / PowerShell).
 
-## Install
+---
 
-1. **Connect to your VPN** and check the interface used by your computer
+## 🐧 Ubuntu / Debian Installation
 
-    It _should_ be `tun0` but we want to make sure :
+### Option A: Install via Debian Package (.deb)
+1. Download `dist/vpn-killswitch_1.0.0_all.deb` from the releases or repo.
+2. Install it using `apt`:
+   ```bash
+   sudo apt install ./dist/vpn-killswitch_1.0.0_all.deb
+   ```
+3. Open your application launcher and search for **VPN Kill Switch**.
 
-    ```bash
-    ip a | grep tun0
-    ```
+### Option B: Run from Source
+```bash
+sudo apt install python3-gi gir1.2-gtk-3.0 network-manager libnotify-bin
+python3 killswitch_gui.py
+```
 
-    If this commands return nothing, enter the `ip a` command and check which network interface your VPN uses.
+---
 
-2. Installing firewall script
+## 🪟 Windows Installation
 
-    ```bash
-    git clone https://github.com/flavienbwk/ubuntu-vpn-killswitch && cd ubuntu-vpn-killswitch
+### Option A: Installer / Portable Package
+1. Extract `dist/vpn-killswitch-windows-installer.zip`.
+2. Right-click `Install_Windows.bat` and select **Run as administrator**.
+   - This creates shortcuts on your Desktop and Start Menu with the app icon.
+3. Alternatively, right-click `Run_Directly.bat` to run without installation.
 
-    sudo apt-get install ufw -y # Installing UFW
+### Option B: Run from Source
+Ensure Python 3.8+ is installed:
+```cmd
+python killswitch_win.py
+```
 
-    # Copy script files
-    cp firewall.sh ~/firewall.sh
-    cp unfirewall.sh ~/unfirewall.sh
+---
 
-    # Enable firewall for VPN-connections only
-    # CONNECT TO YOUR VPN FIRST
-    sudo bash ~/firewall.sh
+## 🚀 How to Use
 
-    # Disable firewall to go back to regular connection
-    sudo bash ~/unfirewall.sh
-    ```
+1. Connect to your VPN.
+2. Launch **VPN Kill Switch**.
+3. Click **Detect Current System IP** (or type your authorized VPN IP).
+4. Click **Enable Kill Switch**.
+5. If the VPN disconnects and your real IP is exposed, the app immediately disables internet connectivity and alerts you.
+6. Once your VPN is re-established, click **Restore Network**.
+
+---
+
+## 📄 License
+MIT License. Free to use and distribute.
